@@ -1,0 +1,35 @@
+version: '3.5'
+
+services:
+  mysql:
+    image: mariadb:10.5
+    environment:
+      MYSQL_ROOT_PASSWORD: postal
+      MYSQL_DATABASE: postal
+      MYSQL_USER: postal
+      MYSQL_PASSWORD: postal2025
+    volumes:
+      - mysql_data:/var/lib/mysql
+    restart: always
+
+  rabbitmq:
+    image: rabbitmq:3.8
+    environment:
+      RABBITMQ_DEFAULT_USER: postal
+      RABBITMQ_DEFAULT_PASS: postal2025
+    restart: always
+
+  postal:
+    build: .
+    depends_on:
+      - mysql
+      - rabbitmq
+    ports:
+      - "5000:5000"
+    volumes:
+      - postal_data:/opt/postal/config
+    restart: always
+
+volumes:
+  mysql_data:
+  postal_data:
